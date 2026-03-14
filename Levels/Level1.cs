@@ -8,6 +8,11 @@ class Level1
     public static void Run(SqlConnection connection)
     {
         Console.WriteLine(Login(connection));
+
+        using SqlCommand cmd = new SqlCommand("SELECT Description FROM Products", connection);
+        using SqlDataReader reader = cmd.ExecuteReader();
+
+        PrintProducts(reader);
     }
 
     public static bool Login(SqlConnection connection)
@@ -15,8 +20,7 @@ class Level1
         string username = InputHelpers.StringInput("\nEnter username: ");
         string password = InputHelpers.StringInput("\nEnter password: ");
 
-        string sql = @"SELECT COUNT(*) FROM Users WHERE Username = @Username AND Password = @Password";
-        using SqlCommand cmd = new SqlCommand(sql, connection);
+        using SqlCommand cmd = new SqlCommand(@"SELECT COUNT(*) FROM Users WHERE Username = @Username AND Password = @Password", connection);
 
         cmd.Parameters.Add("@Username", SqlDbType.NVarChar, 100).Value = username;
         cmd.Parameters.Add("@Password", SqlDbType.NVarChar, 100).Value = password;
@@ -31,7 +35,7 @@ class Level1
 
         while (reader.Read())
         {
-            string? description = reader.IsDBNull(descOrdinal) ? null : reader.GetString(descOrdinal);
+            string? description = reader.GetNullableString(descOrdinal);
             Console.WriteLine($"Description: {description}");
         }
     }

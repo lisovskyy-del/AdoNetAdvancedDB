@@ -14,7 +14,6 @@ class Program
             .AddEnvironmentVariables()
             .Build();
 
-        // 
         DbProviderFactories.RegisterFactory("Microsoft.Data.SqlClient", SqlClientFactory.Instance);
 
         DbProviderFactory factory = DbProviderFactories.GetFactory("Microsoft.Data.SqlClient");
@@ -32,6 +31,7 @@ class Program
                 Console.WriteLine("\nChoose level:\n");
                 Console.WriteLine("1. Level 1");
                 Console.WriteLine("2. Level 2");
+                Console.WriteLine("3. Level 3");
                 Console.WriteLine("0. Exit");
                 Console.WriteLine("\nYour choice: ");
                 string? input = InputHelpers.StringInput("\nYour choice: ");
@@ -50,6 +50,10 @@ class Program
                     else if (userChoice == 2)
                     {
                         Level2.Run(factory, connectionString, connection);
+                    }
+                    else if (userChoice == 3)
+                    {
+                        Level3.Run(connection);
                     }
                     else
                     {

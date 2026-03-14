@@ -22,17 +22,17 @@ internal class Level2
         level2.ConnectToDatabase(connectionString);
     }
 
-    public static void TransferMoney(SqlConnection conn)
+    public static void TransferMoney(SqlConnection connection)
     {
         int fromAccount = InputHelpers.IntInput("\nEnter an id to withdraw: ");
         int toAccount = InputHelpers.IntInput("\nEnter an id to deposit: ");
         decimal amount = InputHelpers.DecimalInput("\nEnter an amount: ");
 
-        SqlTransaction transaction = conn.BeginTransaction(IsolationLevel.Serializable);
+        SqlTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable);
 
         try
         {
-            using SqlCommand cmdWithdraw = new SqlCommand("UPDATE Accounts SET Balance = Balance - @amount WHERE Id = @from", conn, transaction);
+            using SqlCommand cmdWithdraw = new SqlCommand(@"UPDATE Accounts SET Balance = Balance - @amount WHERE Id = @from", connection, transaction);
 
             cmdWithdraw.Parameters.Add("@amount", SqlDbType.Decimal).Value = amount;
             cmdWithdraw.Parameters.Add("@from", SqlDbType.Int).Value = fromAccount;
@@ -40,7 +40,7 @@ internal class Level2
 
             throw new Exception("Server is down!");
 
-            using SqlCommand cmdDeposit = new SqlCommand("UPDATE Accounts SET Balance = Balance + @amount WHERE Id = @to", conn, transaction);
+            using SqlCommand cmdDeposit = new SqlCommand(@"UPDATE Accounts SET Balance = Balance + @amount WHERE Id = @to", connection, transaction);
 
             cmdDeposit.Parameters.Add("@amount",SqlDbType.Decimal).Value = amount;
             cmdDeposit.Parameters.Add("@to", SqlDbType.Int).Value = toAccount;
